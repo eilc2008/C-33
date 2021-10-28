@@ -13,6 +13,7 @@ var bg = "sprites/bg1.png";
 var score = 0;
 
 function preload() {
+    backgroundImg = loadImage("sprites/bg1.png");
     getBackgroundImg();
 }
 
@@ -47,8 +48,9 @@ function setup(){
 }
 
 function draw(){
-    if(backgroundImg)
+    if(backgroundImg){
         background(backgroundImg);
+    }
     
         noStroke();
         textSize(35)
@@ -78,12 +80,14 @@ function draw(){
     platform.display();
     //log6.display();
     slingshot.display();    
+
+    console.log(bird.body.speed);
 }
 
 function mouseDragged(){
-    //if (gameState!=="launched"){
+    if (gameState!=="launched"){
         Matter.Body.setPosition(bird.body, {x: mouseX , y: mouseY});
-    //}
+    }
 }
 
 
@@ -93,19 +97,23 @@ function mouseReleased(){
 }
 
 function keyPressed(){
-    if(keyCode === 32){
+    if(keyCode === 32 && bird.body.speed < 1){
        slingshot.attach(bird.body);
+
+       Matter.Body.setPosition(bird.body,{x:200,y:50});
+
+       bird.trajectory = [];
     }
 }
 
 async function getBackgroundImg(){
-    var response = await fetch("http://worldtimeapi.org/api/timezone/Asia/Kolkata");
+    var response = await fetch("http://worldtimeapi.org/api/timezone/America/Monterrey");
     var responseJSON = await response.json();
 
     var datetime = responseJSON.datetime;
     var hour = datetime.slice(11,13);
     
-    if(hour>=0600 && hour<=1900){
+    if(hour>=06 && hour<=19){
         bg = "sprites/bg1.png";
     }
     else{
